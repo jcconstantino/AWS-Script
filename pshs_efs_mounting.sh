@@ -32,3 +32,11 @@ Consolidate the files, compare them to the rsync logs and efs directory.
 
 Step 10:
 Backup or delete the temporary folders and rsync logs to save storage space. 
+
+
+
+if the unmount is busy:
+umount /media/efs
+try: fuser -mv /media/efs
+then:fuser -kmv /media/efs
+then: unmount again
