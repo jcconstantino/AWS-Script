@@ -40,3 +40,7 @@ umount /media/efs
 try: fuser -mv /media/efs
 then:fuser -kmv /media/efs
 then: unmount again
+
+
+alternative for copy:
+rsync -av /media/efs/nfaps-files/applicant6/* /home/ubuntu/applicant1/
