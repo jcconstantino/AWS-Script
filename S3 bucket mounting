@@ -1,0 +1,16 @@
+
+To mount: use this link:  https://cloudkul.com/blog/mounting-s3-bucket-linux-ec2-instance/
+
+
+
+sudo s3fs bucket name /path/ -o use_cache=/tmp -o allow_other -o uid=33 -o mp_umask=0022 -o multireq_max=5 -o nonempty -o rw
+
+bucket: This specifies the bucket () and the directory  within that bucket to mount.
+/var/www/your/path: The local directory where the S3 bucket directory will be mounted.
+use_cache=/tmp: Uses /tmp as the cache directory.
+allow_other: Allows other users on the system to access the mounted directory.
+uid=1001: Sets the ownership of files to the user with UID 1001. You can replace 1001 with the UID of the desired user.
+mp_umask=0022: Sets the file permission mask, which will result in directories being created with 755 permissions (rwxr-xr-x).
+multireq_max=5: Limits the number of parallel requests; 5 is a moderate setting for performance.
+nonempty: Allows mounting on non-empty directories.
+rw: Mounts the directory with read-write permissions.
