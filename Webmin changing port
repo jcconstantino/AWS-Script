@@ -1,0 +1,4 @@
+sudo nano -w /etc/webmin/miniserv.conf
+
+
+Change the port and SSL
