@@ -1,0 +1,15 @@
+#!/bin/sh
+ 
+cd /var/www/$1
+find . -type d -exec chmod 111 '{}' ';'
+find . -type f -exec chmod 444 '{}' ';'
+find ./wp-content/uploads -type d -exec chmod 333 '{}' ';'
+ 
+cd ./wp-content/uploads
+echo '<FilesMatch ".php.*" >' > .htaccess
+echo '        Order deny,allow' >> .htaccess
+echo '        Deny from all' >> .htaccess
+echo '</FilesMatch>' >> .htaccess
+ 
+cd ../../
+ls -l
