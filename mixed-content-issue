@@ -1,3 +1,6 @@
+ADD THIS TO WPCONFIG
+
+
 /* SSL Settings */
 define('FORCE_SSL_ADMIN', true);
 
