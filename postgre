@@ -26,3 +26,10 @@ targetpshs.cigelttvltmt.ap-southeast-1.rds.amazonaws.com
 pg_dump -Fc -v -h pshsdb.cigelttvltmt.ap-southeast-1.rds.amazonaws.com -U postgres centralDB > centralDB.dump
 
 pg_restore -v -h targetpshs.cigelttvltmt.ap-southeast-1.rds.amazonaws.com -U postgres -d  dbcentral centralDB.dump
+
+
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt-get update
+
+sudo apt-get install postgresql-client-16
