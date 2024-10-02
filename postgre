@@ -1,0 +1,28 @@
+psql --host=pshsinstance.csrut2jbyj1z.ap-southeast-1.rds.amazonaws.com --port=5432 --username=postgres --password=Password1234 --dbname=centralDB
+
+
+psql --host=pshsinstance.csrut2jbyj1z.ap-southeast-1.rds.amazonaws.com --port=5432 --username=postgres --dbname=centralDB
+
+
+
+
+psql --host=postgre-target.csrut2jbyj1z.ap-southeast-1.rds.amazonaws.com --port=5432 --username=postgres
+
+
+
+psql --host=test5-target.csrut2jbyj1z.ap-southeast-1.rds.amazonaws.com --port=5432 --username=postgres
+
+
+NEEEEEEEEEEEEEEEEEW
+
+psql --host=pshsdb.cigelttvltmt.ap-southeast-1.rds.amazonaws.com --port=5432 --username=postgres
+
+psql --host=targetpshs.cigelttvltmt.ap-southeast-1.rds.amazonaws.com --port=5432 --username=postgres
+
+targetpshs.cigelttvltmt.ap-southeast-1.rds.amazonaws.com
+
+
+
+pg_dump -Fc -v -h pshsdb.cigelttvltmt.ap-southeast-1.rds.amazonaws.com -U postgres centralDB > centralDB.dump
+
+pg_restore -v -h targetpshs.cigelttvltmt.ap-southeast-1.rds.amazonaws.com -U postgres -d  dbcentral centralDB.dump
