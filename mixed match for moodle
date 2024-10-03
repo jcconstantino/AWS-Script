@@ -1,0 +1,3 @@
+$CFG->wwwroot   = 'https://' . $_SERVER['HTTP_HOST'];
+
+$CFG->sslproxy  = true;
