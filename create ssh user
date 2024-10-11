@@ -1,0 +1,6 @@
+sudo adduser username
+usermod -aG sudo username
+sudo nano /etc/ssh/sshd_config
+#Include /etc/ssh/sshd_config.d/*.conf
+PasswordAuthentication yes
+PermitRootLogin yes
