@@ -23,7 +23,7 @@ targetpshs.cigelttvltmt.ap-southeast-1.rds.amazonaws.com
 
 
 
-pg_dump -Fc -v -h pshsdb.cigelttvltmt.ap-southeast-1.rds.amazonaws.com -U postgres centralDB > centralDB.dump
+ pg_dump -Fc -v -h clc-source.cdiiqu0eogbo.ap-southeast-1.rds.amazonaws.com -U postgres -d clcDB > clcdb.dump
 
 pg_restore -v -h targetpshs.cigelttvltmt.ap-southeast-1.rds.amazonaws.com -U postgres -d  dbcentral centralDB.dump
 
