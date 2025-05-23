@@ -1,0 +1,143 @@
+LAMBDA 
+Network Invoke
+
+import boto3
+
+# Security Group and port configuration
+SECURITY_GROUP_ID = "sg-0f7c18856047e823d"  # Replace with your security group ID
+PORTS = [80, 443]
+OLD_CIDR_BLOCK =  "203.177.95.252/32"
+NEW_CIDR_BLOCK = "0.0.0.0/0"
+DESCRIPTION = "Allow traffic from all IPs"  # Description for the rule
+
+
+ec2 = boto3.client("ec2")
+
+def lambda_handler(event, context):
+    try:
+        # Describe the current security group rules
+        response = ec2.describe_security_groups(GroupIds=[SECURITY_GROUP_ID])
+        current_permissions = response["SecurityGroups"][0]["IpPermissions"]
+
+        for port in PORTS:
+            # Revoke the existing rule for OLD_CIDR_BLOCK (0.0.0.0/0) if present
+            if rule_exists(current_permissions, OLD_CIDR_BLOCK, port):
+                ec2.revoke_security_group_ingress(
+                    GroupId=SECURITY_GROUP_ID,
+                    IpPermissions=[
+                        {
+                            "IpProtocol": "tcp",
+                            "FromPort": port,
+                            "ToPort": port,
+                            "IpRanges": [{"CidrIp": OLD_CIDR_BLOCK}],
+                        }
+                    ],
+                )
+                print(f"Revoked {OLD_CIDR_BLOCK} from port {port} for security group {SECURITY_GROUP_ID}")
+            
+            # Add the new rule with NEW_CIDR_BLOCK (10.0.0.0/16) if not already present
+            if not rule_exists(current_permissions, NEW_CIDR_BLOCK, port):
+                ec2.authorize_security_group_ingress(
+                    GroupId=SECURITY_GROUP_ID,
+                    IpPermissions=[
+                        {
+                            "IpProtocol": "tcp",
+                            "FromPort": port,
+                            "ToPort": port,
+                            "IpRanges": [{"CidrIp": NEW_CIDR_BLOCK,"Description": DESCRIPTION}],
+                        }
+                    ],
+                )
+                print(f"Allowed {NEW_CIDR_BLOCK} on port {port} for security group {SECURITY_GROUP_ID}")
+            else:
+                print(f"Rule for {NEW_CIDR_BLOCK} already exists on port {port} for security group {SECURITY_GROUP_ID}")
+    
+    except Exception as e:
+        print(f"Error modifying security group: {e}")
+
+def rule_exists(current_permissions, cidr, port):
+    """
+    Check if a specific rule exists in the current security group.
+    """
+    for permission in current_permissions:
+        if permission["FromPort"] == port and permission["ToPort"] == port:
+            for ip_range in permission["IpRanges"]:
+                if ip_range["CidrIp"] == cidr:
+                    return True
+    return False
+
+
+LAMBDA NETWORK REVOKE
+import boto3
+
+# Security Group and port configuration
+SECURITY_GROUP_ID = "sg-0f7c18856047e823d"  # Replace with your security group ID
+PORTS = [80, 443]
+OLD_CIDR_BLOCK = "0.0.0.0/0"
+NEW_CIDR_BLOCK = "203.177.95.252/32"
+DESCRIPTION = "Block traffic from all IPs"  # Description for the rule
+
+ec2 = boto3.client("ec2")
+
+def lambda_handler(event, context):
+    try:
+        # Describe the current security group rules
+        response = ec2.describe_security_groups(GroupIds=[SECURITY_GROUP_ID])
+        current_permissions = response["SecurityGroups"][0]["IpPermissions"]
+
+        for port in PORTS:
+            # Revoke the existing rule for OLD_CIDR_BLOCK (0.0.0.0/0) if present
+            if rule_exists(current_permissions, OLD_CIDR_BLOCK, port):
+                ec2.revoke_security_group_ingress(
+                    GroupId=SECURITY_GROUP_ID,
+                    IpPermissions=[
+                        {
+                            "IpProtocol": "tcp",
+                            "FromPort": port,
+                            "ToPort": port,
+                            "IpRanges": [{"CidrIp": OLD_CIDR_BLOCK}],
+                        }
+                    ],
+                )
+                print(f"Revoked {OLD_CIDR_BLOCK} from port {port} for security group {SECURITY_GROUP_ID}")
+            
+            # Add the new rule with NEW_CIDR_BLOCK (10.0.0.0/16) if not already present
+            if not rule_exists(current_permissions, NEW_CIDR_BLOCK, port):
+                ec2.authorize_security_group_ingress(
+                    GroupId=SECURITY_GROUP_ID,
+                    IpPermissions=[
+                        {
+                            "IpProtocol": "tcp",
+                            "FromPort": port,
+                            "ToPort": port,
+                            "IpRanges": [{"CidrIp": NEW_CIDR_BLOCK,"Description": DESCRIPTION}],
+                        }
+                    ],
+                )
+                print(f"Allowed {NEW_CIDR_BLOCK} on port {port} for security group {SECURITY_GROUP_ID}")
+            else:
+                print(f"Rule for {NEW_CIDR_BLOCK} already exists on port {port} for security group {SECURITY_GROUP_ID}")
+    
+    except Exception as e:
+        print(f"Error modifying security group: {e}")
+
+def rule_exists(current_permissions, cidr, port):
+    """
+    Check if a specific rule exists in the current security group.
+    """
+    for permission in current_permissions:
+        if permission["FromPort"] == port and permission["ToPort"] == port:
+            for ip_range in permission["IpRanges"]:
+                if ip_range["CidrIp"] == cidr:
+                    return True
+    return False
+
+
+———————
+Event Bridge
+
+Closing the traffic at exact 6PM
+0 10 ? * MON-FRI *
+
+Open the traffic at exact 6AM
+0 22 ? * 1-5 *
